@@ -1,0 +1,213 @@
+{% load static %} {%load mathfilters%} {%load humanize%}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="../static/styles.css">
+    <title>Foodie Calorie Finder</title>
+</head>
+
+<body>
+<div class="header">
+    <img  src="{% static 'images/food.jpg' %}" class="logo"/>
+    <a href="">HOME</a>
+    <a href="#about us">LEARN MORE</a>
+    <a href="">FOODS LIST</a>
+    <div class = "site-nav">
+        <span id = "nav-btn">MENU <i class = "fas fa-bars"></i></span>
+    </div>
+</div>
+
+
+    <div class="container">
+      
+        <div class="">
+            <div>
+                
+                <form method="post">
+                    {%csrf_token%}
+                    
+                    <div class="input-group">
+                        <div><span class="input_p">FIND FOODS' CALORIES:</span></div>
+                        <input type="text" name="query" class="form-control inputstyle"
+                            placeholder="search for calories in your food..." required>
+                        <button class="btn whoop" type="submit" id="button-addon2">Find calories</button>
+                    </div>
+                </form>
+                {% if api %}
+                  {% if api == "oops! There was an error" %}
+                <div class="alert_shock"> Oh no! something went wrong.Please try again in sometime. </div>
+                {%else%}
+                <h1 class="alert_shock">{{api.0.name  | capfirst}} has a total of <strong>{{api.0.calories}} Calories</strong>
+                  {%if api.0.calories > 200%} 
+                    <img src="{% static 'images/shocked.png' %}" class="img-responsive" />
+                  {%endif%}
+                </h1>
+                    
+                {%if api.0.sodium_mg > 1000%}
+                      <div class="alert alert-danger" role="alert">
+                          <div>
+                              This food contains an high amount of sodium. High Sodium causes Sever dehydration and water retention.
+                          </div>
+                        </div>
+                        {%endif%}
+                        {%if api.0.sugar_g > 100%}
+                  <div class="alert alert-danger" role="alert">
+                      <div>
+                          This food contains an high amount of sugar. Sugar causes insulin spikes and is a no.1 cause for Obesity.
+                      </div>
+                    </div>
+                    {%endif%}
+            </div>
+            <div class="row">
+                <div class="caloriescont shadow rounded">
+                    <div class="row">
+
+                        <div class="">
+                            <h2 class="">Nutritional Values </h2><span></span>
+                            <ul>
+                                <li class="servingsize">Serving Size per 100/Grams <span class="float-end"></span></li>
+                                <li>Carbohydrates: <span class="float-end">{{api.0.carbohydrates_total_g}}</span></li>
+                                <li>Cholesterol: <span class="float-end">{{api.0.cholesterol_mg}}</span></li>
+                                <li>Saturated fat: <span class="float-end">{{api.0.fat_saturated_g}}</span></li>
+                                <li>Total Fat: <span class="float-end">{{api.0.fat_saturated_g}}</span></li>
+                                <li>Fiber Content: <span class="float-end">{{api.0.fat_total_g}}</span></li>
+                                <li>Potassium <span class="float-end">{{api.0.potassium_mg}}</span></li>
+                                <li>Protein: <span class="float-end">{{api.0.protein_g}}</span></li>
+                                <li>Sodium:<span class="float-end">{{api.0.sodium_mg}}</span></li>
+                                <li>Sugar: <span class="float-end">{{api.0.sugar_g}}</span></li>
+                            </ul>
+                        </div>
+                        <div class="">
+                            <h4 class="idea">To burn {{api.0.calories}} calories you will have to</h4>
+                            <div class="icons jog">
+                                <div class="flex-shrink">
+                                    <img src="{% static 'images/running.png' %}" alt="...">
+                                </div>
+                                <div class="flex-grow">
+                                    <h5> Jog </h5>
+                                    <p>you will have to jog for <strong> {{api.0.calories | div:378|mul:60|floatformat:0}} </strong> Minutes</p>
+                                </div>
+                            </div>
+                            <div class="icons">
+                                <div class="flex-shrink">
+                                    <img src="{% static 'images/yoga.png' %}" alt="...">
+                                </div>
+                                <div class="flex-grow">
+                                    <h5> Do Power Yoga </h5>
+                                    <p>you will have to Power Yoga for <strong> {{api.0.calories | div:223|mul:60|floatformat:0}} </strong> Minutes</p>
+                                </div>
+                            </div>
+                            <div class="icons">
+                                <div class="flex-shrink">
+                                    <img src="{% static 'images/weightlifter.png' %}" alt="...">
+                                </div>
+                                <div class="flex-grow">
+                                    <h5>Get a Gym Workout </h5>
+                                    <p>you will have to lift weight for <strong> {{api.0.calories | div:483|mul:60|floatformat:0}} </strong> Minutes </p>
+                                </div>
+                            </div>
+                            <div class="icons">
+                                <div class="flex-shrink">
+                                    <img src="{% static 'images/walking.png' %}" alt="...">
+                                </div>
+                                <div class="flex-grow">
+                                    <h5> Go for a Brisk Walk </h5>
+                                    <p>you will have to brisk walk for <strong> {{api.0.calories | div:294|mul:60|floatformat:0}}  </strong> Minutes</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {%endif%}
+                {%endif%}
+            </div>
+            <!-- start main part -->
+            <main id="about us" class="learn_more">
+         <div >
+            <h1>How Many Calories Do You Need?</h1>
+            <p>Many people seek to lose weight, and often the easiest way to do this is to consume fewer calories each day. But how many calories does the body actually need in order to be healthy? This largely depends on the amount of physical activity a person performs each day, and regardless of this, is different for all 
+                people there are many different factors involved, not all of which are well-understood or known.
+            </p>
+            <p>The body does not require many calories to simply survive. However, consuming too few calories results in the body functioning poorly, since it will only use calories for functions essential to survival, and ignore those necessary for general health and well-being. Harvard Health Publications suggests women get at least 1,200 calories and men get at least 1,500 calories a day unless supervised by doctors. As such, it is highly recommended that a person attempting to lose weight monitors their body's
+                 caloric necessities and adjusts them as necessary to maintain its nutritional needs.</p>
+         </div>
+         <div>
+           <h1>Calories: Different Kinds and Their Effects</h1>
+           <p>The main sources of calories in a typical person's diet are carbohydrates, proteins,
+             and fat, with alcohol also being a significant portion of calorie intake for many people (though ideally this should be limited since alcohol contains many empty calories). Some studies have shown that the calories displayed on nutrition labels and the calories actually consumed and retained can vary significantly. This hints at the complex nature of calories and nutrition 
+            and is why many conflicting points of view on the "best" methodology for losing weight exist</p>
+         </div>
+            </main>
+         <!--footer  -->
+         <footer class = "footer" id="footer">
+            <div class = "footer-container">
+                <div>
+                    <h2>About Us </h2>
+                    <p> Best calorie tracker, WITH best informatoins</p>
+                    <ul class = "social-icons">
+                        <li> 
+                            <i class = "fab fa-twitter fa-2x"></i>
+                          </li>
+                          <li>
+                            <i class = "fab fa-facebook-f fa-2x" ></i>
+                          </li>
+                          <li>
+                         <i class = "fab fa-instagram fa-2x"></i>
+                          </li>
+                        
+                    </ul>
+                </div>
+        
+                <div class="footer">
+                    <h2>Useful Links</h2>
+                    <a href = "#">Blog</a>
+                    <a href = "#">healthy consume</a>
+                    <a href = "#">Subscription</a>
+                    <a href = "#">Gift Card</a>
+                </div>
+        
+                <div class="footer">
+                    <h2>Privacy</h2>
+                    <a href = "#about us">learn more</a>
+                    <a href = "#about us">About Us</a>
+                    <a href = "#footer">Contact Us</a>
+                    <a href = "#">Services</a>
+                </div>
+        
+                <div>
+                    <h2>Have A Question</h2>
+                    <div class = "contact-item">
+                        <span>
+                            <i class = "fas fa-map-marker-alt"></i>
+                        </span>
+                        <span>
+                            you can visit our web_application every time from every where</span>
+                    </div>
+                    <div class = "contact-item">
+                        <span>
+                            <i class = "fas fa-phone-alt"></i>
+                        </span>
+                        <span>
+                            +93 705 215 519
+                        </span>
+                    </div>
+                    <div class = "contact-item">
+                        <span>
+                            <i class = "fas fa-envelope"></i>
+                        </span>
+                        <span>
+                            food_calc@gamil.com
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- end of footer -->
+</body>
+
+</html>
